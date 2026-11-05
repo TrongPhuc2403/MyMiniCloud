@@ -1,0 +1,310 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [
+            {
+              "options": {
+                "0": { "color": "red", "index": 1, "text": "DOWN" },
+                "1": { "color": "green", "index": 0, "text": "UP (1 / 1)" }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "title": "Node Exporter Target",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+          "expr": "up{job=\"node\"}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [
+            {
+              "options": {
+                "0": { "color": "red", "index": 1, "text": "DOWN" },
+                "3": { "color": "green", "index": 0, "text": "UP (3 / 3)" }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "title": "Web Frontend Target (#7)",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+          "expr": "count(up{job=\"web\"} == 1)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "blue", "mode": "fixed" },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "title": "CPU Busy (Realtime)",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+          "expr": "100 - (avg(irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "purple", "mode": "fixed" },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "title": "Memory Available",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+          "expr": "node_memory_MemAvailable_bytes",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 16, "lineWidth": 2 },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 8, "x": 0, "y": 4 },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": ["min", "max", "mean", "lastNotNull"],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": { "mode": "multi", "sort": "none" }
+      },
+      "title": "1. CPU Usage (node_cpu_seconds_total)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+          "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "cpu_busy_total (%)",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+          "expr": "irate(node_cpu_seconds_total{cpu=\"0\", mode!=\"idle\"}[5m]) * 100",
+          "legendFormat": "mode=\"{{mode}}\" (cpu0)",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 18, "lineWidth": 2 },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 8, "x": 8, "y": 4 },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": ["min", "max", "mean", "lastNotNull"],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": { "mode": "multi", "sort": "none" }
+      },
+      "title": "2. Memory Usage (node_memory_MemAvailable_bytes)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+          "expr": "node_memory_MemAvailable_bytes",
+          "legendFormat": "MemAvailable_bytes",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+          "expr": "node_memory_MemTotal_bytes",
+          "legendFormat": "MemTotal_bytes",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 16, "lineWidth": 2 },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 8, "x": 16, "y": 4 },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": ["min", "max", "mean", "lastNotNull"],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": { "mode": "multi", "sort": "none" }
+      },
+      "title": "3. Network Traffic (node_network_receive_bytes_total)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+          "expr": "irate(node_network_receive_bytes_total[5m])",
+          "legendFormat": "{{device}} receive (RX)",
+          "refId": "A"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+          "expr": "irate(node_network_transmit_bytes_total[5m])",
+          "legendFormat": "{{device}} transmit (TX)",
+          "refId": "B"
+        }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": ["myminicloud", "prometheus", "node-exporter"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": true, "text": "monitoring-node-exporter-server:9100", "value": "monitoring-node-exporter-server:9100" },
+        "label": "instance",
+        "name": "instance",
+        "options": [
+          { "selected": true, "text": "monitoring-node-exporter-server:9100", "value": "monitoring-node-exporter-server:9100" }
+        ],
+        "query": "monitoring-node-exporter-server:9100",
+        "type": "custom"
+      },
+      {
+        "current": { "selected": true, "text": "web-frontend-server:80 (UP)", "value": "web-frontend-server:80 (UP)" },
+        "label": "web_target",
+        "name": "web_target",
+        "options": [
+          { "selected": true, "text": "web-frontend-server:80 (UP)", "value": "web-frontend-server:80 (UP)" }
+        ],
+        "query": "web-frontend-server:80 (UP)",
+        "type": "custom"
+      },
+      {
+        "current": { "selected": true, "text": "cloud-net (bridge)", "value": "cloud-net (bridge)" },
+        "label": "network",
+        "name": "network",
+        "options": [
+          { "selected": true, "text": "cloud-net (bridge)", "value": "cloud-net (bridge)" }
+        ],
+        "query": "cloud-net (bridge)",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": { "from": "now-15m", "to": "now" },
+  "timezone": "browser",
+  "title": "System Health of 52400138",
+  "uid": "system-health-52400138",
+  "version": 3
+}
