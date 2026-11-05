@@ -1,0 +1,1329 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Tìm hiểu Docker, Docker Image, Container và Docker Compose. Khám phá cách tổ chức các dịch vụ trong dự án MyMiniCloud."
+    />
+    <meta name="theme-color" content="#f6f8fc" />
+    <title>Docker và công nghệ Container — MyMiniCloud</title>
+    <style>
+      :root {
+        --ink: #132440;
+        --muted: #617089;
+        --blue: #3164ed;
+        --line: #e3e9f2;
+        --paper: #f6f8fc;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 30px;
+      }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family:
+          Inter,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Arial,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      a:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 5px;
+        border-radius: 4px;
+      }
+      svg {
+        display: block;
+      }
+      .icons {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+      .wrap {
+        width: min(1180px, calc(100% - 64px));
+        margin-inline: auto;
+      }
+      .skip {
+        position: absolute;
+        left: 20px;
+        top: -100px;
+        padding: 12px 20px;
+        background: white;
+        z-index: 10;
+      }
+      .skip:focus {
+        top: 12px;
+      }
+      .header {
+        height: 94px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+        gap: 24px;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 21px;
+        font-weight: 750;
+        letter-spacing: -0.8px;
+      }
+      .brand-icon {
+        display: grid;
+        place-items: center;
+        width: 37px;
+        height: 37px;
+        border-radius: 11px;
+        background: var(--blue);
+        color: white;
+        flex-shrink: 0;
+      }
+      .brand-icon svg {
+        width: 25px;
+        height: 25px;
+      }
+      .brand span span {
+        color: var(--blue);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 33px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .nav a {
+        transition: color 0.2s;
+      }
+      .nav a:hover,
+      .nav .active {
+        color: var(--blue);
+      }
+      .nav .nav-cta {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        padding: 12px 18px;
+        border: 1px solid #cfd9e9;
+        border-radius: 8px;
+      }
+      .arrow {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-block: 30px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .breadcrumb a:hover {
+        color: var(--blue);
+      }
+      .breadcrumb span[aria-hidden] {
+        color: #a2aec0;
+      }
+      .breadcrumb [aria-current] {
+        color: var(--ink);
+      }
+      .article-header {
+        max-width: 820px;
+        padding-block: 23px 36px;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 10px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--blue);
+      }
+      .badge {
+        padding: 8px 11px;
+        background: #eaf0ff;
+        border: 1px solid #dbe5ff;
+        border-radius: 6px;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        background: currentColor;
+        border-radius: 50%;
+      }
+      h1 {
+        margin: 20px 0;
+        font-size: clamp(36px, 4.4vw, 56px);
+        line-height: 1.16;
+        letter-spacing: -2px;
+        font-weight: 750;
+      }
+      h1 span {
+        color: var(--blue);
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.85;
+        max-width: 720px;
+        margin: 0;
+      }
+      .article-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .author-icon {
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        color: var(--blue);
+        background: #e7eeff;
+        border-radius: 50%;
+      }
+      .author-icon svg {
+        width: 21px;
+        height: 21px;
+      }
+      .article-meta b {
+        font-weight: 650;
+        color: var(--ink);
+      }
+      .meta-divider {
+        width: 1px;
+        height: 14px;
+        background: #d4deed;
+      }
+      .cover {
+        margin: 0 0 44px;
+      }
+      .cover-art {
+        min-height: 270px;
+        padding: 38px;
+        border: 1px solid #dce6fa;
+        border-radius: 16px;
+        background:
+          radial-gradient(ellipse at 70% 50%, #dbe7ff, transparent 65%), #edf3ff;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: 35px;
+      }
+      .cover-copy {
+        padding-left: 16px;
+      }
+      .cover-copy .eyebrow {
+        font-family: ui-monospace, monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: #728ab3;
+      }
+      .cover-copy strong {
+        display: block;
+        margin-block: 14px 10px;
+        font-size: 31px;
+        font-weight: 700;
+        letter-spacing: -1px;
+      }
+      .cover-copy p {
+        margin: 0;
+        font-size: 13px;
+        color: #6f84a6;
+        line-height: 1.8;
+        max-width: 270px;
+      }
+      .cover-diagram {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+      }
+      .cloud-tile {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 135px;
+        height: 124px;
+        flex-shrink: 0;
+        color: white;
+        background: linear-gradient(145deg, #5484ff, #2859da);
+        border: 5px solid #f5f8ff;
+        border-radius: 28px;
+        box-shadow:
+          0 12px 35px #3164ed26,
+          0 0 0 10px #e2ebff;
+      }
+      .cloud-tile::after {
+        content: "";
+        position: absolute;
+        height: 1px;
+        background: #adc2ed;
+        width: 29px;
+        right: -34px;
+      }
+      .cloud-tile svg {
+        width: 76px;
+        height: 60px;
+      }
+      .resources {
+        display: grid;
+        gap: 9px;
+      }
+      .resources span {
+        padding: 10px 16px;
+        min-width: 130px;
+        background: #ffffffdf;
+        border: 1px solid #dce5f6;
+        border-radius: 8px;
+        font-size: 11px;
+        color: #526c98;
+      }
+      .resources i {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        background: #7d9de2;
+        border-radius: 50%;
+        margin-right: 8px;
+        vertical-align: middle;
+      }
+      figcaption {
+        margin-top: 11px;
+        text-align: center;
+        font-size: 11px;
+        line-height: 1.7;
+        color: #7788a0;
+      }
+      .reading-layout {
+        display: grid;
+        grid-template-columns: 235px minmax(0, 1fr);
+        gap: 46px;
+        align-items: start;
+      }
+      .sidebar {
+        position: sticky;
+        top: 30px;
+      }
+      .toc {
+        padding: 23px 20px;
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 12px;
+      }
+      .toc h2 {
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin: 0 0 17px;
+        color: #7b8ba3;
+      }
+      .toc ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 5px;
+      }
+      .toc a {
+        display: flex;
+        gap: 12px;
+        align-items: baseline;
+        font-size: 12px;
+        line-height: 1.65;
+        padding-block: 10px;
+      }
+      .toc a span {
+        color: #96a6be;
+        font-family: ui-monospace, monospace;
+        font-size: 10px;
+      }
+      .toc a:hover,
+      .toc a:hover span {
+        color: var(--blue);
+      }
+      .sidebar-note {
+        font-size: 12px;
+        line-height: 1.8;
+        color: #7b8ba3;
+        padding: 7px 20px;
+      }
+      .sidebar-note b {
+        color: #56739f;
+        font-weight: 600;
+      }
+      .article-body {
+        background: white;
+        padding: 38px 42px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+      }
+      .article-body section + section {
+        border-top: 1px solid #edf1f7;
+        padding-top: 30px;
+        margin-top: 30px;
+      }
+      .section-number {
+        display: block;
+        color: #7391cb;
+        font-size: 10px;
+        letter-spacing: 1.4px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+      .article-body h2 {
+        margin: 0 0 17px;
+        font-size: 25px;
+        line-height: 1.35;
+        letter-spacing: -0.7px;
+      }
+      .article-body p {
+        margin: 0 0 18px;
+        font-size: 15px;
+        color: var(--muted);
+        line-height: 1.9;
+      }
+      .article-body p:last-child {
+        margin-bottom: 0;
+      }
+      .article-body strong {
+        color: var(--ink);
+        font-weight: 650;
+      }
+      .callout {
+        padding: 18px 20px;
+        background: #f0f5ff;
+        border-left: 3px solid var(--blue);
+        border-radius: 0 8px 8px 0;
+        margin-top: 22px;
+      }
+      .callout .eyebrow {
+        font-size: 9px;
+        margin-bottom: 7px;
+      }
+      .callout p {
+        font-size: 13px;
+        color: #526d99;
+      }
+      .services {
+        display: grid;
+        gap: 12px;
+        margin-top: 22px;
+      }
+      .service {
+        display: grid;
+        grid-template-columns: 55px 1fr;
+        align-items: start;
+        gap: 18px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 20px;
+      }
+      .service-tag {
+        display: grid;
+        place-items: center;
+        width: 55px;
+        height: 44px;
+        background: #edf3ff;
+        color: #527bd1;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 750;
+      }
+      .service:nth-child(2) .service-tag {
+        color: #35889c;
+        background: #eaf5f7;
+      }
+      .service:nth-child(3) .service-tag {
+        color: #a87a30;
+        background: #fbf3e7;
+      }
+      .service h3 {
+        margin: 0 0 6px;
+        font-size: 14px;
+        line-height: 1.6;
+        font-weight: 650;
+      }
+      .service p {
+        font-size: 13px;
+        line-height: 1.85;
+      }
+      .benefits {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0 0;
+        display: grid;
+        gap: 15px;
+      }
+      .benefits li {
+        display: flex;
+        align-items: baseline;
+        gap: 13px;
+        font-size: 14px;
+        line-height: 1.8;
+        color: var(--muted);
+      }
+      .benefits li::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        flex-shrink: 0;
+        border-radius: 2px;
+        background: #8cabea;
+      }
+      .tech-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 20px;
+      }
+      .tech-list span {
+        padding: 6px 11px;
+        border-radius: 5px;
+        background: #f4f7fc;
+        border: 1px solid var(--line);
+        font-size: 11px;
+        color: #607797;
+      }
+      .takeaway {
+        margin-top: 30px;
+        border-radius: 10px;
+        padding: 26px;
+        background: #142c4d;
+        color: white;
+      }
+      .takeaway .eyebrow {
+        font-size: 9px;
+        color: #a6c1f7;
+        margin-bottom: 10px;
+      }
+      .takeaway p {
+        color: #c1cee1;
+        font-size: 14px;
+      }
+      .article-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border-top: 1px solid var(--line);
+        margin-top: 30px;
+        padding-top: 24px;
+      }
+      .text-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 650;
+      }
+      .text-link:hover {
+        color: var(--blue);
+      }
+      .back-arrow {
+        transform: rotate(180deg);
+      }
+      .next-article {
+        margin-top: 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 25px 28px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: white;
+        transition:
+          border-color 0.2s,
+          transform 0.2s;
+      }
+      .next-article:hover {
+        border-color: #b3c8f5;
+        transform: translateY(-2px);
+      }
+      .next-article .eyebrow {
+        font-size: 9px;
+        color: #8494ad;
+      }
+      .next-article h2 {
+        font-size: 19px;
+        letter-spacing: -0.4px;
+        margin: 8px 0 5px;
+      }
+      .next-article p {
+        font-size: 12px;
+        line-height: 1.7;
+        margin: 0;
+        color: var(--muted);
+      }
+      .next-article > .arrow {
+        color: var(--blue);
+        width: 23px;
+        height: 23px;
+      }
+      footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding-block: 36px;
+        margin-top: 48px;
+        color: #8a97aa;
+        font-size: 11px;
+        border-top: 1px solid var(--line);
+      }
+      footer .brand {
+        color: #52647e;
+        font-size: 16px;
+        letter-spacing: -0.5px;
+      }
+      footer .brand-icon {
+        background: #e5ebf6;
+        color: #6b83ae;
+        height: 28px;
+        width: 28px;
+        border-radius: 8px;
+      }
+      footer .brand-icon svg {
+        width: 20px;
+      }
+      .footer-copy {
+        text-align: right;
+        line-height: 1.8;
+      }
+      @media (max-width: 1000px) {
+        .reading-layout {
+          grid-template-columns: 200px minmax(0, 1fr);
+          gap: 25px;
+        }
+        .article-body {
+          padding: 30px;
+        }
+        .cover-art {
+          padding: 30px;
+          gap: 20px;
+        }
+        .cover-copy {
+          padding-left: 0;
+        }
+        .cover-diagram {
+          gap: 20px;
+        }
+        .cloud-tile {
+          width: 115px;
+          height: 110px;
+        }
+        .cloud-tile::after {
+          width: 20px;
+          right: -25px;
+        }
+      }
+      @media (max-width: 760px) {
+        .wrap {
+          width: calc(100% - 40px);
+        }
+        .header {
+          height: 78px;
+          gap: 12px;
+        }
+        .brand {
+          font-size: 19px;
+        }
+        .nav {
+          gap: 20px;
+          font-size: 13px;
+        }
+        .nav .nav-cta {
+          display: none;
+        }
+        .breadcrumb {
+          padding-block: 23px;
+          font-size: 11px;
+          gap: 8px;
+        }
+        .article-header {
+          padding-block: 15px 28px;
+        }
+        h1 {
+          font-size: clamp(35px, 7vw, 48px);
+          letter-spacing: -1.4px;
+        }
+        .lead {
+          font-size: 15px;
+        }
+        .cover {
+          margin-bottom: 28px;
+        }
+        .cover-art {
+          grid-template-columns: 1fr;
+          gap: 30px;
+          padding: 28px 22px 35px;
+        }
+        .cover-copy strong {
+          font-size: 27px;
+        }
+        .cover-copy p {
+          max-width: none;
+        }
+        .cover-diagram {
+          gap: 24px;
+        }
+        .cloud-tile::after {
+          right: -29px;
+          width: 24px;
+        }
+        .resources span {
+          min-width: 112px;
+          padding: 10px 12px;
+        }
+        .reading-layout {
+          grid-template-columns: 1fr;
+          gap: 23px;
+        }
+        .sidebar {
+          position: static;
+        }
+        .sidebar-note {
+          display: none;
+        }
+        .toc {
+          padding: 21px 23px;
+        }
+        .toc h2 {
+          margin-bottom: 10px;
+        }
+        .toc ol {
+          gap: 0;
+        }
+        .toc a {
+          padding-block: 8px;
+        }
+        .article-body {
+          padding: 28px 23px;
+        }
+        .article-body h2 {
+          font-size: 23px;
+        }
+        .article-body p {
+          font-size: 14px;
+        }
+        .service {
+          padding: 16px;
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+        .service p,
+        .callout p {
+          font-size: 13px;
+        }
+        .article-bottom {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .next-article {
+          padding: 22px;
+        }
+        footer {
+          margin-top: 35px;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 14px;
+          padding-block: 28px;
+        }
+        .footer-copy {
+          text-align: left;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+          transition: none !important;
+        }
+      }
+      @media print {
+        .header,
+        .breadcrumb,
+        .sidebar,
+        .next-article,
+        .article-bottom,
+        footer,
+        .skip {
+          display: none;
+        }
+        body {
+          background: white;
+        }
+        .wrap {
+          width: 100%;
+        }
+        .reading-layout {
+          display: block;
+        }
+        .article-body {
+          border: 0;
+          padding: 0;
+        }
+        .cover-art,
+        .service,
+        .takeaway {
+          break-inside: avoid;
+        }
+      }
+
+      .cover-art {
+        background:
+          radial-gradient(ellipse at 70% 50%, #d8edf3, transparent 65%), #edf6f8;
+        border-color: #d9eaf0;
+      }
+      .cover-copy .eyebrow {
+        color: #648c9a;
+      }
+      .cover-copy p {
+        color: #61808f;
+      }
+      .image-tile {
+        position: relative;
+        flex-shrink: 0;
+        width: 135px;
+        height: 124px;
+        border-radius: 26px;
+        border: 5px solid #f3fbfc;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        color: white;
+        background: linear-gradient(145deg, #57b6cc, #27869e);
+        box-shadow:
+          0 12px 35px #27869e24,
+          0 0 0 10px #e0f0f5;
+      }
+      .image-tile::after {
+        content: "";
+        position: absolute;
+        height: 1px;
+        background: #a9cdd8;
+        width: 29px;
+        right: -34px;
+      }
+      .image-tile svg {
+        width: 58px;
+        height: 58px;
+      }
+      .image-tile span {
+        font:
+          9px ui-monospace,
+          monospace;
+        letter-spacing: 2px;
+      }
+      .resources span {
+        border-color: #d9eaf0;
+        color: #537e8c;
+      }
+      .resources i {
+        background: #64a6b9;
+      }
+      .concept-icon {
+        width: 28px;
+        height: 28px;
+      }
+      .reading-layout > div {
+        min-width: 0;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      }
+      p code,
+      dt code {
+        font-size: 0.88em;
+        background: #edf3ff;
+        color: #4168b4;
+        padding: 3px 6px;
+        border-radius: 4px;
+        overflow-wrap: anywhere;
+      }
+      .terminal {
+        border-radius: 11px;
+        overflow: hidden;
+        background: #142c4d;
+        margin: 24px 0 12px;
+      }
+      .terminal-bar {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid #ffffff12;
+        padding: 13px 17px;
+        font:
+          10px ui-monospace,
+          monospace;
+        color: #9cb0cd;
+      }
+      .terminal-dots {
+        display: flex;
+        gap: 5px;
+      }
+      .terminal-dots i {
+        height: 6px;
+        width: 6px;
+        background: #617b9f;
+        border-radius: 50%;
+      }
+      .terminal pre {
+        margin: 0;
+        padding: 23px;
+        overflow-x: auto;
+        font-size: 13px;
+        line-height: 1.8;
+        color: #c6e9f1;
+      }
+      .terminal pre:focus-visible {
+        outline: 2px solid #7fa5ff;
+        outline-offset: -3px;
+      }
+      .article-body .command-context {
+        font-size: 12px;
+        color: #788ba6;
+        line-height: 1.8;
+      }
+      .flags {
+        margin: 22px 0 0;
+        display: grid;
+        gap: 12px;
+      }
+      .flags > div {
+        display: grid;
+        grid-template-columns: 85px 1fr;
+        align-items: baseline;
+        gap: 12px;
+      }
+      .flags dt {
+        font-size: 14px;
+      }
+      .flags dd {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.8;
+        color: var(--muted);
+      }
+      @media (max-width: 1000px) {
+        .image-tile {
+          width: 115px;
+          height: 110px;
+        }
+        .image-tile::after {
+          width: 20px;
+          right: -25px;
+        }
+      }
+      @media (max-width: 760px) {
+        .image-tile::after {
+          width: 24px;
+          right: -29px;
+        }
+        .terminal pre {
+          padding: 20px 16px;
+          font-size: 12px;
+        }
+        .terminal-bar {
+          gap: 10px;
+          font-size: 9px;
+        }
+        .flags > div {
+          grid-template-columns: 72px 1fr;
+          gap: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg class="icons" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="cloud" viewBox="0 0 64 48">
+        <path
+          d="M18 39h30a11 11 0 0 0 1-22 17 17 0 0 0-32-4A13 13 0 0 0 18 39Z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M25 25h14m-7-7v14"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+        />
+      </symbol>
+      <symbol id="arrow" viewBox="0 0 24 24">
+        <path
+          d="M5 12h14m-6-6 6 6-6 6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <symbol id="box" viewBox="0 0 48 48">
+        <path
+          d="m24 5 17 10v19L24 44 7 34V15Z"
+          fill="currentColor"
+          fill-opacity=".08"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linejoin="round"
+        />
+        <path
+          d="m7 15 17 10 17-10M24 25v19M15 10l18 10v9"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <symbol id="run" viewBox="0 0 48 48">
+        <rect
+          x="5"
+          y="7"
+          width="38"
+          height="34"
+          rx="6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        />
+        <path
+          d="M5 16h38m-31-4h1m4 0h1m3 0h1M20 23l10 6-10 6Z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+    </svg>
+    <a class="skip" href="#noi-dung">Đến nội dung bài viết</a>
+    <header class="header wrap">
+      <a class="brand" href="/" aria-label="MyMiniCloud — Trang chủ"
+        ><span class="brand-icon"
+          ><svg aria-hidden="true"><use href="#cloud" /></svg></span
+        ><span>MyMini<span>Cloud</span></span></a
+      >
+      <nav class="nav" aria-label="Điều hướng chính">
+        <a href="/">Trang chủ</a>
+        <a class="active" href="/blog/">Blog</a>
+        <a class="nav-cta" href="/#kham-pha"
+          >Khám phá ngay
+          <svg class="arrow" aria-hidden="true"><use href="#arrow" /></svg
+        ></a>
+      </nav>
+    </header>
+    <main class="wrap" id="noi-dung">
+      <nav class="breadcrumb" aria-label="Đường dẫn trang">
+        <a href="/">Trang chủ</a><span aria-hidden="true">/</span
+        ><a href="/blog/">Blog</a><span aria-hidden="true">/</span
+        ><span aria-current="page">Docker Container</span>
+      </nav>
+      <article aria-labelledby="article-title">
+        <header class="article-header">
+          <span class="eyebrow badge"
+            ><span class="dot"></span>Phát triển &amp; triển khai</span
+          >
+          <h1 id="article-title">
+            Docker và<br /><span>công nghệ Container.</span>
+          </h1>
+          <p class="lead">
+            Đóng gói ứng dụng, kết nối dịch vụ và triển khai nhất quán. Bắt đầu
+            với Docker để hiểu cách những container nhỏ tạo nên một hệ thống
+            lớn.
+          </p>
+          <div class="article-meta">
+            <span class="author-icon"
+              ><svg aria-hidden="true"><use href="#cloud" /></svg></span
+            ><b>MyMiniCloud</b
+            ><span class="meta-divider" aria-hidden="true"></span
+            ><span>Containerization</span
+            ><span class="meta-divider" aria-hidden="true"></span
+            ><span>Dành cho người mới bắt đầu</span>
+          </div>
+        </header>
+        <figure class="cover">
+          <div
+            class="cover-art"
+            role="img"
+            aria-label="Docker Image là mẫu đóng gói dùng để tạo các Docker Container"
+          >
+            <div class="cover-copy" aria-hidden="true">
+              <span class="eyebrow">Build once. Run anywhere.</span
+              ><strong>Đóng gói. Kết nối. Triển khai.</strong>
+              <p>
+                Một Image, nhiều Container.<br />Cùng một nền tảng để ứng dụng
+                vận hành.
+              </p>
+            </div>
+            <div class="cover-diagram" aria-hidden="true">
+              <div class="image-tile">
+                <svg aria-hidden="true"><use href="#box" /></svg
+                ><span>IMAGE</span>
+              </div>
+              <div class="resources">
+                <span><i></i>Container 01</span><span><i></i>Container 02</span
+                ><span><i></i>Container 03</span>
+              </div>
+            </div>
+          </div>
+          <figcaption>
+            Image là mẫu đóng gói; mỗi Container là một thể hiện được tạo từ
+            Image.
+          </figcaption>
+        </figure>
+        <div class="reading-layout">
+          <aside class="sidebar">
+            <nav class="toc" aria-labelledby="toc-title">
+              <h2 id="toc-title">Trong bài viết này</h2>
+              <ol>
+                <li>
+                  <a href="#khai-niem"><span>01</span>Docker là gì?</a>
+                </li>
+                <li>
+                  <a href="#image-container"
+                    ><span>02</span>Image và Container</a
+                  >
+                </li>
+                <li>
+                  <a href="#compose"><span>03</span>Docker Compose</a>
+                </li>
+                <li>
+                  <a href="#ung-dung"><span>04</span>Ứng dụng trong dự án</a>
+                </li>
+              </ol>
+            </nav>
+            <p class="sidebar-note">
+              <b>Hiểu từ gốc.</b><br />Bắt đầu với khái niệm, kết nối với thực
+              tế.
+            </p>
+          </aside>
+          <div>
+            <div class="article-body">
+              <section id="khai-niem" aria-labelledby="definition-title">
+                <span class="section-number">01 / KHÁI NIỆM</span>
+                <h2 id="definition-title">Docker là gì?</h2>
+                <p>
+                  <strong>Docker</strong> là nền tảng hỗ trợ đóng gói và triển
+                  khai ứng dụng thông qua Container. Mỗi Container chạy ứng dụng
+                  cùng các thành phần phụ thuộc cần thiết, như thư viện và môi
+                  trường thực thi.
+                </p>
+                <p>
+                  Nhờ cách đóng gói này, bạn có thể triển khai ứng dụng nhất
+                  quán hơn giữa các môi trường tương thích, từ máy phát triển
+                  đến máy chủ.
+                </p>
+                <aside class="callout" aria-label="Hiểu về Container">
+                  <span class="eyebrow">Nhẹ và tách biệt</span>
+                  <p>
+                    Các Container có môi trường tiến trình và hệ thống tệp được
+                    cô lập, nhưng chia sẻ kernel của máy chủ chạy chúng. Vì vậy,
+                    Container thường nhẹ hơn một máy ảo chứa hệ điều hành riêng.
+                  </p>
+                </aside>
+              </section>
+              <section id="image-container" aria-labelledby="image-title">
+                <span class="section-number">02 / HAI KHÁI NIỆM CỐT LÕI</span>
+                <h2 id="image-title">Docker Image và Container</h2>
+                <p>
+                  Image và Container có liên hệ chặt chẽ, nhưng đảm nhiệm hai
+                  vai trò khác nhau trong quá trình triển khai.
+                </p>
+                <div class="services">
+                  <div class="service">
+                    <span class="service-tag"
+                      ><svg class="concept-icon" aria-hidden="true">
+                        <use href="#box" /></svg
+                    ></span>
+                    <div>
+                      <h3>Image — Mẫu đóng gói</h3>
+                      <p>
+                        Docker Image chứa mã ứng dụng, thư viện và cấu hình môi
+                        trường thực thi. Image gồm các lớp chỉ đọc và được dùng
+                        làm mẫu để tạo Container.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="service">
+                    <span class="service-tag"
+                      ><svg class="concept-icon" aria-hidden="true">
+                        <use href="#run" /></svg
+                    ></span>
+                    <div>
+                      <h3>Container — Thể hiện của Image</h3>
+                      <p>
+                        Container được tạo từ Image, có thêm lớp ghi riêng và có
+                        thể được khởi động, dừng hoặc xóa. Bạn có thể tạo nhiều
+                        Container độc lập từ cùng một Image.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <aside class="callout" aria-label="Ví dụ Image và Container">
+                  <span class="eyebrow">Ví dụ thực tế</span>
+                  <p>
+                    Từ cùng một Image của ứng dụng Flask, bạn có thể tạo nhiều
+                    Container để chạy các bản ứng dụng riêng biệt. Dữ liệu cần
+                    lưu lâu dài nên được đặt trong volume hoặc một hệ thống lưu
+                    trữ phù hợp.
+                  </p>
+                </aside>
+              </section>
+              <section id="compose" aria-labelledby="compose-title">
+                <span class="section-number">03 / QUẢN LÝ NHIỀU DỊCH VỤ</span>
+                <h2 id="compose-title">Kết nối hệ thống với Docker Compose</h2>
+                <p>
+                  <strong>Docker Compose</strong> giúp định nghĩa và quản lý
+                  nhiều Container thông qua một file YAML. Các thành phần như
+                  network, volume, port và environment được cấu hình tập trung.
+                </p>
+                <p>
+                  Thay vì khởi chạy từng Container thủ công, bạn có thể dùng một
+                  lệnh để build và khởi động các dịch vụ được khai báo trong cấu
+                  hình Compose.
+                </p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <span class="terminal-dots" aria-hidden="true"
+                      ><i></i><i></i><i></i></span
+                    ><span>Terminal · Docker Compose</span>
+                  </div>
+                  <pre
+                    tabindex="0"
+                    aria-label="Lệnh build và khởi động các dịch vụ"
+                  ><code>docker compose up -d --build</code></pre>
+                </div>
+                <p class="command-context">
+                  Chạy tại thư mục chứa file cấu hình Compose, trên máy đã cài
+                  Docker Engine và Docker Compose.
+                </p>
+                <dl class="flags">
+                  <div>
+                    <dt><code>up</code></dt>
+                    <dd>Tạo và khởi động các dịch vụ.</dd>
+                  </div>
+                  <div>
+                    <dt><code>-d</code></dt>
+                    <dd>Chạy các Container ở chế độ nền.</dd>
+                  </div>
+                  <div>
+                    <dt><code>--build</code></dt>
+                    <dd>
+                      Build Image cho các dịch vụ có cấu hình build trước khi
+                      khởi động.
+                    </dd>
+                  </div>
+                </dl>
+              </section>
+              <section id="ung-dung" aria-labelledby="project-title">
+                <span class="section-number"
+                  >04 / TỪ LÝ THUYẾT ĐẾN THỰC HÀNH</span
+                >
+                <h2 id="project-title">Docker trong MyMiniCloud</h2>
+                <p>
+                  Trong mô hình MyMiniCloud, các dịch vụ được triển khai thành
+                  những <strong>Container riêng biệt</strong>. Các Container
+                  giao tiếp thông qua Docker Network <code>cloud-net</code>,
+                  giúp mô phỏng kiến trúc nhiều máy chủ.
+                </p>
+                <p>
+                  Nginx, ứng dụng Flask và cơ sở dữ liệu MariaDB có thể được tổ
+                  chức thành các dịch vụ độc lập trong Docker Compose. Cách phân
+                  tách này giúp theo dõi, cấu hình và quản lý từng thành phần rõ
+                  ràng hơn.
+                </p>
+                <div
+                  class="tech-list"
+                  aria-label="Thành phần Docker trong dự án"
+                >
+                  <span>Docker Image</span><span>Container</span
+                  ><span>Compose</span><span>cloud-net</span><span>Volume</span>
+                </div>
+              </section>
+              <aside class="takeaway" aria-label="Điểm cần nhớ">
+                <span class="eyebrow">Điểm cần nhớ</span>
+                <p>
+                  Image là mẫu đóng gói. Container là thể hiện được tạo từ
+                  Image. Docker Compose kết nối nhiều dịch vụ thành một hệ thống
+                  có cấu hình tập trung.
+                </p>
+              </aside>
+              <nav class="article-bottom" aria-label="Điều hướng sau bài viết">
+                <a class="text-link" href="/blog/"
+                  ><svg class="arrow back-arrow" aria-hidden="true">
+                    <use href="#arrow" /></svg
+                  >Danh sách bài viết</a
+                ><a class="text-link" href="/"
+                  >Về trang chủ
+                  <svg class="arrow" aria-hidden="true">
+                    <use href="#arrow" /></svg
+                ></a>
+              </nav>
+            </div>
+            <a class="next-article" href="/blog/blog3.html"
+              ><div>
+                <span class="eyebrow">Tiếp tục khám phá</span>
+                <h2>Triển khai ứng dụng trên AWS EC2</h2>
+                <p>
+                  Đưa hệ thống từ môi trường phát triển lên máy chủ đám mây.
+                </p>
+              </div>
+              <svg class="arrow" aria-hidden="true"><use href="#arrow" /></svg
+            ></a>
+          </div>
+        </div>
+      </article>
+    </main>
+    <footer class="wrap">
+      <a class="brand" href="/"
+        ><span class="brand-icon"
+          ><svg aria-hidden="true"><use href="#cloud" /></svg></span
+        >MyMiniCloud</a
+      >
+      <div class="footer-copy">
+        MyMiniCloud · Cloud Computing Project<br />Được xây dựng từ sự tò mò và
+        tinh thần học hỏi.
+      </div>
+    </footer>
+  </body>
+</html>

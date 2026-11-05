@@ -1,0 +1,1134 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Khám phá điện toán đám mây cùng MyMiniCloud — dự án thực hành Docker, Nginx, Flask, MariaDB và AWS EC2."
+    />
+    <meta name="theme-color" content="#f6f8fc" />
+    <title>MyMiniCloud — Từ ý tưởng đến đám mây</title>
+    <style>
+      :root {
+        --ink: #132440;
+        --muted: #617089;
+        --blue: #3164ed;
+        --line: #e3e9f2;
+        --paper: #f6f8fc;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 30px;
+      }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family:
+          Inter,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Arial,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+      a:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 6px;
+        border-radius: 5px;
+      }
+      svg {
+        display: block;
+      }
+      .wrap {
+        width: min(1180px, calc(100% - 64px));
+        margin-inline: auto;
+      }
+      .skip {
+        position: absolute;
+        left: 20px;
+        top: -100px;
+        padding: 12px 20px;
+        background: white;
+        z-index: 10;
+      }
+      .skip:focus {
+        top: 12px;
+      }
+      .header {
+        height: 94px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+        gap: 24px;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 21px;
+        font-weight: 750;
+        letter-spacing: -0.8px;
+      }
+      .brand-icon {
+        display: grid;
+        place-items: center;
+        width: 37px;
+        height: 37px;
+        border-radius: 11px;
+        background: var(--blue);
+        color: white;
+      }
+      .brand-icon svg {
+        width: 25px;
+        height: 25px;
+      }
+      .brand span span {
+        color: var(--blue);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 33px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .nav a {
+        transition: color 0.2s;
+      }
+      .nav a:hover,
+      .nav .active {
+        color: var(--blue);
+      }
+      .nav .nav-cta {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        padding: 12px 18px;
+        border: 1px solid #cfd9e9;
+        border-radius: 8px;
+      }
+      .arrow {
+        width: 18px;
+        height: 18px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.05fr 1fr;
+        gap: 52px;
+        align-items: center;
+        padding-block: 88px 74px;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+      }
+      .hero .eyebrow {
+        color: #3a64cb;
+        padding: 8px 12px;
+        background: #eaf0ff;
+        border: 1px solid #dbe5ff;
+        border-radius: 6px;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        background: currentColor;
+        border-radius: 50%;
+      }
+      h1 {
+        font-size: clamp(42px, 4.7vw, 62px);
+        font-weight: 750;
+        line-height: 1.14;
+        letter-spacing: -2.7px;
+        margin: 25px 0 22px;
+      }
+      h1 span {
+        color: var(--blue);
+      }
+      .hero-copy > p {
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.85;
+        max-width: 465px;
+        margin: 0;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 22px;
+        margin-top: 31px;
+      }
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 15px 20px;
+        background: var(--blue);
+        color: white;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 650;
+        box-shadow: 0 5px 12px #3164ed20;
+        transition:
+          background 0.2s,
+          transform 0.2s;
+      }
+      .button:hover {
+        background: #214fce;
+        transform: translateY(-2px);
+      }
+      .text-link {
+        font-size: 14px;
+        font-weight: 650;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .text-link:hover {
+        color: var(--blue);
+      }
+      .hero-note {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 27px;
+        color: #7e8ba0;
+        font-size: 12px;
+      }
+      .hero-note svg {
+        width: 15px;
+        height: 15px;
+        color: #5e8a72;
+      }
+      .visual {
+        position: relative;
+        min-height: 405px;
+        display: grid;
+        place-items: center;
+        background: radial-gradient(
+          ellipse,
+          #dce7ff 0%,
+          #edf2fd 45%,
+          transparent 73%
+        );
+      }
+      .visual::before {
+        content: "";
+        position: absolute;
+        inset: 20px 0;
+        background-image: radial-gradient(#a9bbd6 1px, transparent 1px);
+        background-size: 22px 22px;
+        opacity: 0.35;
+        mask-image: radial-gradient(ellipse, black, transparent 73%);
+      }
+      .architecture {
+        position: relative;
+        width: 100%;
+        max-width: 470px;
+        height: 350px;
+      }
+      .connections {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        color: #a5bced;
+      }
+      .node {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        background: #ffffffed;
+        border: 1px solid #e0e7f3;
+        border-radius: 12px;
+        padding: 14px 17px;
+        box-shadow: 0 8px 24px #203d7510;
+      }
+      .node-icon {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 9px;
+        background: #edf3ff;
+        color: var(--blue);
+      }
+      .node-icon svg {
+        width: 21px;
+        height: 21px;
+      }
+      .node b {
+        display: block;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .node small {
+        display: block;
+        font-size: 10px;
+        color: #8591a5;
+        margin-top: 1px;
+      }
+      .node-docker {
+        top: 25px;
+        left: 12px;
+        transform: rotate(-5deg);
+      }
+      .node-aws {
+        top: 12px;
+        right: 6px;
+        transform: rotate(4deg);
+      }
+      .node-aws .node-icon {
+        color: #d68d25;
+        background: #fff4e0;
+      }
+      .node-nginx {
+        bottom: 29px;
+        left: 0;
+        transform: rotate(-4deg);
+      }
+      .node-nginx .node-icon {
+        color: #38936b;
+        background: #eaf7ef;
+      }
+      .node-db {
+        right: 0;
+        bottom: 38px;
+        transform: rotate(5deg);
+      }
+      .node-db .node-icon {
+        color: #9671c4;
+        background: #f3edfc;
+      }
+      .cloud-core {
+        position: absolute;
+        left: 50%;
+        top: 48%;
+        transform: translate(-50%, -50%);
+        width: 143px;
+        height: 126px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 8px;
+        color: white;
+        background: linear-gradient(145deg, #5484ff, #2859da);
+        border: 5px solid #f5f8ff;
+        border-radius: 28px;
+        box-shadow:
+          0 15px 35px #3164ed35,
+          0 0 0 11px #e6eeff90;
+      }
+      .cloud-core svg {
+        width: 62px;
+        height: 45px;
+      }
+      .cloud-core span {
+        font-size: 11px;
+        font-weight: 650;
+        letter-spacing: 0.2px;
+      }
+      .visual-caption {
+        position: absolute;
+        bottom: -3px;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        font-family: ui-monospace, monospace;
+        font-size: 10px;
+        letter-spacing: 1.4px;
+        color: #8a9ab4;
+      }
+      .stack {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        padding-block: 25px;
+        border-block: 1px solid var(--line);
+      }
+      .stack-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: #8a96a9;
+        max-width: 115px;
+        line-height: 1.7;
+      }
+      .stack-list {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        flex: 1;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .stack-list span {
+        color: #697a93;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+      .stack-list .nginx {
+        font-size: 16px;
+        letter-spacing: 1px;
+      }
+      .knowledge {
+        padding-block: 72px 76px;
+      }
+      .section-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 30px;
+      }
+      .section-heading .eyebrow {
+        color: var(--blue);
+        font-size: 10px;
+      }
+      h2 {
+        margin: 12px 0 10px;
+        font-size: 31px;
+        letter-spacing: -1px;
+        font-weight: 720;
+      }
+      .section-heading p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+      .section-heading > a {
+        flex-shrink: 0;
+        margin-bottom: 5px;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+      }
+      .card {
+        overflow: hidden;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        transition:
+          transform 0.25s,
+          box-shadow 0.25s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px #1d3b6a0c;
+      }
+      .card-art {
+        height: 174px;
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+        background: #eaf1ff;
+        color: #5583e5;
+      }
+      .card-art::before {
+        content: "";
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        border: 1px solid currentColor;
+        border-radius: 50%;
+        opacity: 0.13;
+        box-shadow:
+          0 0 0 24px #ffffff35,
+          0 0 0 48px #ffffff25;
+      }
+      .card-art > svg {
+        width: 93px;
+        height: 93px;
+        filter: drop-shadow(0 8px 5px #31528c15);
+      }
+      .art-docker {
+        background: #e9f4f7;
+        color: #379ab4;
+      }
+      .art-aws {
+        background: #f8f0e4;
+        color: #c99242;
+      }
+      .art-label {
+        position: absolute;
+        left: 18px;
+        top: 16px;
+        font-family: ui-monospace, monospace;
+        font-size: 9px;
+        letter-spacing: 1.2px;
+        opacity: 0.7;
+      }
+      .art-index {
+        position: absolute;
+        right: 18px;
+        bottom: 14px;
+        font-family: ui-monospace, monospace;
+        font-size: 10px;
+        opacity: 0.6;
+      }
+      .card-body {
+        padding: 24px;
+      }
+      .category {
+        display: inline-block;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1.1px;
+        color: #5077c7;
+        text-transform: uppercase;
+      }
+      .art-docker + .card-body .category {
+        color: #35889c;
+      }
+      .art-aws + .card-body .category {
+        color: #a87a30;
+      }
+      h3 {
+        font-size: 21px;
+        letter-spacing: -0.5px;
+        margin: 11px 0 10px;
+      }
+      .card p {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.85;
+        margin: 0 0 23px;
+      }
+      .card-link {
+        border-top: 1px solid #eef1f6;
+        padding-top: 17px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .card-link svg {
+        transition: transform 0.2s;
+        color: #71839c;
+      }
+      .card-link:hover {
+        color: var(--blue);
+      }
+      .card-link:hover svg {
+        transform: translateX(4px);
+        color: var(--blue);
+      }
+      .project {
+        background: #142c4d;
+        border-radius: 15px;
+        color: white;
+        padding: 38px 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+        position: relative;
+        overflow: hidden;
+      }
+      .project::after {
+        content: "";
+        position: absolute;
+        right: -50px;
+        top: -110px;
+        width: 360px;
+        height: 360px;
+        border: 1px solid #ffffff0d;
+        border-radius: 50%;
+        box-shadow:
+          0 0 0 40px #ffffff03,
+          0 0 0 80px #ffffff03;
+        pointer-events: none;
+      }
+      .project .eyebrow {
+        color: #97b7f2;
+        font-size: 9px;
+      }
+      .project h2 {
+        font-size: 25px;
+        margin: 10px 0;
+        letter-spacing: -0.6px;
+      }
+      .project p {
+        font-size: 13px;
+        color: #a8bbd4;
+        margin: 0;
+        line-height: 1.8;
+        max-width: 610px;
+      }
+      .project .button {
+        flex-shrink: 0;
+        background: white;
+        color: #1a3558;
+        font-size: 12px;
+        z-index: 1;
+      }
+      footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding-block: 36px;
+        margin-top: 39px;
+        color: #8a97aa;
+        font-size: 11px;
+      }
+      footer .brand {
+        color: #52647e;
+        font-size: 16px;
+        letter-spacing: -0.5px;
+      }
+      footer .brand-icon {
+        background: #e5ebf6;
+        color: #6b83ae;
+        height: 28px;
+        width: 28px;
+        border-radius: 8px;
+      }
+      footer .brand-icon svg {
+        width: 20px;
+      }
+      .footer-copy {
+        text-align: right;
+        line-height: 1.8;
+      }
+      .icons {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+      @media (min-width: 1500px) {
+        .hero {
+          padding-block: 105px 90px;
+        }
+      }
+      @media (max-width: 900px) {
+        .hero {
+          gap: 20px;
+          padding-block: 65px 50px;
+        }
+        h1 {
+          font-size: 46px;
+          letter-spacing: -2px;
+        }
+        .node {
+          padding: 11px;
+          gap: 7px;
+        }
+        .node-icon {
+          height: 29px;
+          width: 29px;
+        }
+        .node b {
+          font-size: 11px;
+        }
+        .node small {
+          font-size: 9px;
+        }
+        .cloud-core {
+          width: 116px;
+          height: 110px;
+        }
+        .card-body {
+          padding: 20px;
+        }
+        .project {
+          padding: 32px;
+        }
+      }
+      @media (max-width: 700px) {
+        .wrap {
+          width: calc(100% - 40px);
+        }
+        .header {
+          height: 78px;
+          gap: 12px;
+        }
+        .brand {
+          font-size: 19px;
+        }
+        .nav {
+          gap: 20px;
+          font-size: 13px;
+        }
+        .nav .nav-cta {
+          display: none;
+        }
+        .hero {
+          grid-template-columns: 1fr;
+          gap: 15px;
+          padding-block: 48px 30px;
+        }
+        h1 {
+          font-size: clamp(40px, 9vw, 58px);
+          max-width: 530px;
+        }
+        .hero-copy > p {
+          font-size: 15px;
+          max-width: 520px;
+        }
+        .visual {
+          min-height: 350px;
+        }
+        .architecture {
+          max-width: 420px;
+          height: 320px;
+        }
+        .node {
+          padding: 13px;
+        }
+        .node b {
+          font-size: 12px;
+        }
+        .cloud-core {
+          width: 130px;
+          height: 118px;
+        }
+        .stack {
+          flex-direction: column;
+          gap: 17px;
+          padding-block: 24px;
+        }
+        .stack-label {
+          max-width: none;
+        }
+        .stack-list {
+          width: 100%;
+          gap: 15px;
+        }
+        .stack-list span {
+          font-size: 15px;
+        }
+        .stack-list .nginx {
+          font-size: 13px;
+        }
+        .knowledge {
+          padding-block: 48px;
+        }
+        .section-heading {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 16px;
+        }
+        h2 {
+          font-size: 28px;
+        }
+        .cards {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+        .card-art {
+          height: 185px;
+        }
+        .card-body {
+          padding: 24px;
+        }
+        .project {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 29px 25px;
+          gap: 22px;
+        }
+        .project h2 {
+          font-size: 23px;
+        }
+        footer {
+          margin-top: 15px;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 14px;
+          padding-block: 30px;
+        }
+        .footer-copy {
+          text-align: left;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg class="icons" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="cloud" viewBox="0 0 64 48">
+        <path
+          d="M18 39h30a11 11 0 0 0 1-22 17 17 0 0 0-32-4A13 13 0 0 0 18 39Z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M25 25h14m-7-7v14"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+        />
+      </symbol>
+      <symbol id="arrow" viewBox="0 0 24 24">
+        <path
+          d="M5 12h14m-6-6 6 6-6 6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <symbol id="box" viewBox="0 0 48 48">
+        <path
+          d="m24 5 17 10v19L24 44 7 34V15Z"
+          fill="currentColor"
+          fill-opacity=".08"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linejoin="round"
+        />
+        <path
+          d="m7 15 17 10 17-10M24 25v19M15 10l18 10v9"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <symbol id="server" viewBox="0 0 48 48">
+        <rect
+          x="8"
+          y="6"
+          width="32"
+          height="14"
+          rx="4"
+          fill="currentColor"
+          fill-opacity=".1"
+          stroke="currentColor"
+          stroke-width="2"
+        />
+        <rect
+          x="8"
+          y="27"
+          width="32"
+          height="14"
+          rx="4"
+          fill="currentColor"
+          fill-opacity=".1"
+          stroke="currentColor"
+          stroke-width="2"
+        />
+        <path
+          d="M15 13h1m-1 21h1m9-21h8m-8 21h8M24 20v7"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+      </symbol>
+      <symbol id="database" viewBox="0 0 48 48">
+        <path
+          d="M8 12v24c0 5 32 5 32 0V12M8 24c0 6 32 6 32 0"
+          fill="currentColor"
+          fill-opacity=".08"
+          stroke="currentColor"
+          stroke-width="2"
+        />
+        <ellipse
+          cx="24"
+          cy="12"
+          rx="16"
+          ry="6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        />
+      </symbol>
+      <symbol id="code" viewBox="0 0 48 48">
+        <path
+          d="m17 13-11 11 11 11m14-22 11 11-11 11M27 8l-6 32"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+    </svg>
+    <a class="skip" href="#main">Đến nội dung chính</a>
+    <header class="header wrap">
+      <a class="brand" href="/" aria-label="MyMiniCloud — Trang chủ"
+        ><span class="brand-icon"
+          ><svg aria-hidden="true"><use href="#cloud" /></svg></span
+        ><span>MyMini<span>Cloud</span></span></a
+      >
+      <nav class="nav" aria-label="Điều hướng chính">
+        <a class="active" href="/" aria-current="page">Trang chủ</a>
+        <a href="/blog/">Blog</a>
+        <a class="nav-cta" href="#kham-pha"
+          >Khám phá ngay
+          <svg class="arrow" aria-hidden="true"><use href="#arrow" /></svg
+        ></a>
+      </nav>
+    </header>
+    <main id="main" class="wrap">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            <span class="dot"></span> Cloud computing project
+          </div>
+          <h1 id="hero-title">Từ ý tưởng<br />đến <span>đám mây.</span></h1>
+          <p>
+            Khám phá cách một hệ thống đám mây được xây dựng. Cùng MyMiniCloud
+            học, thực hành và kết nối công nghệ để đưa ứng dụng vào thực tế.
+          </p>
+          <div class="actions">
+            <a class="button" href="#kham-pha"
+              >Bắt đầu khám phá
+              <svg class="arrow" aria-hidden="true"><use href="#arrow" /></svg
+            ></a>
+            <a class="text-link" href="#du-an"
+              >Về dự án
+              <svg
+                class="arrow"
+                style="transform: rotate(-45deg)"
+                aria-hidden="true"
+              >
+                <use href="#arrow" /></svg
+            ></a>
+          </div>
+          <div class="hero-note">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path
+                d="m4 10 4 4 8-8"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              /></svg
+            >Học từ nền tảng. Hiểu qua thực hành.
+          </div>
+        </div>
+        <div
+          class="visual"
+          role="img"
+          aria-label="Minh họa hệ thống MyMiniCloud kết nối Docker, AWS EC2, Nginx và MariaDB"
+        >
+          <div class="architecture" aria-hidden="true">
+            <svg class="connections" viewBox="0 0 470 350" fill="none">
+              <path
+                d="M95 70v95h140M375 60v105H235M90 285v-110h145m145 100V175H235"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-dasharray="5 5"
+              />
+              <circle
+                cx="235"
+                cy="170"
+                r="100"
+                stroke="currentColor"
+                stroke-opacity=".25"
+              />
+              <circle
+                cx="235"
+                cy="170"
+                r="121"
+                stroke="currentColor"
+                stroke-opacity=".12"
+              />
+            </svg>
+            <div class="node node-docker">
+              <span class="node-icon"
+                ><svg><use href="#box" /></svg
+              ></span>
+              <div><b>Docker</b><small>Container hóa</small></div>
+            </div>
+            <div class="node node-aws">
+              <span class="node-icon"
+                ><svg><use href="#server" /></svg
+              ></span>
+              <div><b>AWS EC2</b><small>Hạ tầng đám mây</small></div>
+            </div>
+            <div class="cloud-core">
+              <svg><use href="#cloud" /></svg><span>MyMiniCloud</span>
+            </div>
+            <div class="node node-nginx">
+              <span class="node-icon"
+                ><svg><use href="#code" /></svg
+              ></span>
+              <div><b>Nginx + Flask</b><small>Web & ứng dụng</small></div>
+            </div>
+            <div class="node node-db">
+              <span class="node-icon"
+                ><svg><use href="#database" /></svg
+              ></span>
+              <div><b>MariaDB</b><small>Lưu trữ dữ liệu</small></div>
+            </div>
+            <span class="visual-caption">BUILD · CONNECT · DEPLOY</span>
+          </div>
+        </div>
+      </section>
+      <div class="stack" aria-label="Công nghệ sử dụng">
+        <span class="stack-label">ĐƯỢC XÂY DỰNG VỚI</span>
+        <div class="stack-list">
+          <span>docker</span><span class="nginx">NGINX</span><span>Flask</span
+          ><span>MariaDB</span
+          ><span
+            >aws<span
+              style="font-weight: 400; font-size: 12px; letter-spacing: 0"
+            >
+              EC2</span
+            ></span
+          >
+        </div>
+      </div>
+      <section
+        class="knowledge"
+        id="kham-pha"
+        aria-labelledby="knowledge-title"
+      >
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Góc kiến thức</span>
+            <h2 id="knowledge-title">Hiểu công nghệ. Mở tiềm năng.</h2>
+            <p>
+              Những kiến thức nền tảng cho hành trình xây dựng hệ thống đám mây.
+            </p>
+          </div>
+          <a class="text-link" href="/blog/"
+            >Tất cả bài viết
+            <svg class="arrow" aria-hidden="true"><use href="#arrow" /></svg
+          ></a>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="card-art" aria-hidden="true">
+              <span class="art-label">THE CLOUD, EXPLAINED</span
+              ><svg viewBox="0 0 64 48"><use href="#cloud" /></svg
+              ><span class="art-index">01 / FOUNDATION</span>
+            </div>
+            <div class="card-body">
+              <span class="category">Kiến thức nền tảng</span>
+              <h3>Cloud Computing</h3>
+              <p>
+                Điện toán đám mây là gì? Tìm hiểu cách hoạt động và các mô hình
+                dịch vụ phổ biến.
+              </p>
+              <a
+                class="card-link"
+                href="/blog/blog1.html"
+                aria-label="Đọc bài viết về Cloud Computing"
+                >Khám phá bài viết
+                <svg class="arrow" aria-hidden="true"><use href="#arrow" /></svg
+              ></a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art art-docker" aria-hidden="true">
+              <span class="art-label">BUILD ONCE. RUN ANYWHERE.</span
+              ><svg><use href="#box" /></svg
+              ><span class="art-index">02 / CONTAINERS</span>
+            </div>
+            <div class="card-body">
+              <span class="category">Phát triển & triển khai</span>
+              <h3>Docker Container</h3>
+              <p>
+                Đóng gói ứng dụng với container. Khám phá cách triển khai nhất
+                quán và linh hoạt hơn.
+              </p>
+              <a
+                class="card-link"
+                href="/blog/blog2.html"
+                aria-label="Đọc bài viết về Docker Container"
+                >Khám phá bài viết
+                <svg class="arrow" aria-hidden="true"><use href="#arrow" /></svg
+              ></a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-art art-aws" aria-hidden="true">
+              <span class="art-label">YOUR NEXT CLOUD SERVER</span
+              ><svg><use href="#server" /></svg
+              ><span class="art-index">03 / INFRASTRUCTURE</span>
+            </div>
+            <div class="card-body">
+              <span class="category">Hạ tầng đám mây</span>
+              <h3>AWS EC2</h3>
+              <p>
+                Từ máy chủ ảo đến ứng dụng thực tế. Làm quen với việc triển khai
+                trên nền tảng AWS.
+              </p>
+              <a
+                class="card-link"
+                href="/blog/blog3.html"
+                aria-label="Đọc bài viết về AWS EC2"
+                >Khám phá bài viết
+                <svg class="arrow" aria-hidden="true"><use href="#arrow" /></svg
+              ></a>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="project" id="du-an" aria-labelledby="project-title">
+        <div>
+          <span class="eyebrow">Một dự án nhỏ. Nhiều điều để khám phá.</span>
+          <h2 id="project-title">Học đám mây bằng cách xây dựng.</h2>
+          <p>
+            MyMiniCloud là dự án mô phỏng hệ thống điện toán đám mây, kết hợp
+            Docker, Nginx, Flask, MariaDB và AWS EC2 trong một hành trình thực
+            hành.
+          </p>
+        </div>
+        <a class="button" href="/blog/"
+          >Khám phá kiến thức
+          <svg class="arrow" aria-hidden="true"><use href="#arrow" /></svg
+        ></a>
+      </section>
+    </main>
+    <footer class="wrap">
+      <a class="brand" href="/"
+        ><span class="brand-icon"
+          ><svg aria-hidden="true"><use href="#cloud" /></svg></span
+        >MyMiniCloud</a
+      >
+      <div class="footer-copy">
+        MyMiniCloud · Cloud Computing Project<br />Được xây dựng từ sự tò mò và
+        tinh thần học hỏi.
+      </div>
+    </footer>
+  </body>
+</html>
