@@ -1,0 +1,15 @@
+$TTL 604800
+@   IN SOA ns.cloud.local. admin.cloud.local. (
+        2026110602
+        604800
+        86400
+        2419200
+        604800
+)
+
+@       IN NS ns.cloud.local.
+
+ns      IN A 172.19.0.5
+app     IN A 172.19.0.4
+auth    IN A 172.19.0.2
+storage IN A 172.19.0.3

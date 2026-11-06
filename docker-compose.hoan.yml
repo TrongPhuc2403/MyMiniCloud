@@ -1,0 +1,84 @@
+
+name: myminicloud-hoan
+
+services:
+  authentication-identity-server:
+    image: quay.io/keycloak/keycloak:26.4
+    container_name: authentication-identity-server
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD:?Set KC_ADMIN_PASSWORD}
+      KC_HTTP_ENABLED: "true"
+    ports:
+      - "8081:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - ./authentication-identity-server/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    networks:
+      cloud-net:
+        ipv4_address: 172.19.0.2
+    restart: unless-stopped
+
+  object-storage-server:
+    image: cgr.dev/chainguard/minio:latest
+    container_name: object-storage-server
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      cloud-net:
+        ipv4_address: 172.19.0.3
+    restart: unless-stopped
+
+  minio-init:
+    image: python:3.12-slim
+    container_name: minio-init
+    depends_on:
+      - object-storage-server
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}
+      MINIO_ENDPOINT: http://object-storage-server:9000
+      MINIO_BUCKET_NAME: demo
+    volumes:
+      - ./object-storage-server/init_buckets.py:/app/init_buckets.py:ro
+    working_dir: /app
+    command:
+      - sh
+      - -c
+      - "pip install --no-cache-dir boto3 && python init_buckets.py"
+    networks:
+      - cloud-net
+    restart: "no"
+
+  internal-dns-server:
+    image: internetsystemsconsortium/bind9:9.18
+    container_name: internal-dns-server
+    ports:
+      - "1053:53/udp"
+      - "1053:53/tcp"
+    volumes:
+      - ./internal-dns-server/named.conf:/etc/bind/named.conf:ro
+      - ./internal-dns-server/named.conf.options:/etc/bind/named.conf.options:ro
+      - ./internal-dns-server/named.conf.local:/etc/bind/named.conf.local:ro
+      - ./internal-dns-server/db.cloud.local:/etc/bind/db.cloud.local:ro
+    networks:
+      cloud-net:
+        ipv4_address: 172.19.0.5
+    restart: unless-stopped
+
+networks:
+  cloud-net:
+    external: true
+    name: cloud-net
+
+volumes:
+  keycloak_data:
+  minio_data:
