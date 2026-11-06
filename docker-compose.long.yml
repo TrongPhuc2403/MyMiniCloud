@@ -4,17 +4,21 @@ services:
   web-frontend-server1:
     build:
       context: ./web-frontend-server1
+    image: myminicloud-web1:dev
     container_name: web-frontend-server1
     networks:
-      - cloud-net
+      cloud-net:
+        ipv4_address: 172.19.0.8
     restart: unless-stopped
 
   web-frontend-server2:
     build:
       context: ./web-frontend-server2
+    image: myminicloud-web2:dev
     container_name: web-frontend-server2
     networks:
-      - cloud-net
+      cloud-net:
+        ipv4_address: 172.19.0.9
     restart: unless-stopped
 
   monitoring-node-exporter-server:
@@ -23,7 +27,8 @@ services:
     ports:
       - "9100:9100"
     networks:
-      - cloud-net
+      cloud-net:
+        ipv4_address: 172.19.0.10
     restart: unless-stopped
 
   monitoring-prometheus-server:
@@ -36,7 +41,8 @@ services:
     depends_on:
       - monitoring-node-exporter-server
     networks:
-      - cloud-net
+      cloud-net:
+        ipv4_address: 172.19.0.11
     restart: unless-stopped
 
   monitoring-grafana-dashboard-server:
@@ -52,7 +58,8 @@ services:
     depends_on:
       - monitoring-prometheus-server
     networks:
-      - cloud-net
+      cloud-net:
+        ipv4_address: 172.19.0.12
     restart: unless-stopped
 
   api-gateway-proxy-server:
@@ -66,10 +73,14 @@ services:
       - web-frontend-server1
       - web-frontend-server2
     networks:
-      - cloud-net
+      cloud-net:
+        ipv4_address: 172.19.0.13
     restart: unless-stopped
 
 networks:
   cloud-net:
     name: cloud-net
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
