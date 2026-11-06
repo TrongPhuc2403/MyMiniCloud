@@ -41,7 +41,6 @@ MyMiniCloud/
 │   └── realm-export.json
 ├── object-storage-server/
 │   ├── init_buckets.py
-│   ├── init-buckets.sh
 │   └── requirements.txt
 └── internal-dns-server/
     ├── named.conf
@@ -59,7 +58,6 @@ Trong đó:
 - `named.conf.local`: Khai báo DNS Zone.
 - `db.cloud.local`: Chứa các bản ghi DNS nội bộ.
 
-File `init-buckets.sh` là tệp bổ trợ, không được gọi trong cấu hình Compose hiện tại.
 
 ## 4. Cấu hình môi trường
 
