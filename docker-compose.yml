@@ -41,9 +41,9 @@ services:
     ports:
       - "8085:8081"
     environment:
-      OIDC_ISSUER: ${OIDC_ISSUER:-http://auth.cloud.local:8081/realms/realm_52400114}
-      OIDC_AUDIENCE: ${OIDC_AUDIENCE:-flask-app}
-      OIDC_JWKS_URL: ${OIDC_JWKS_URL:-http://authentication-identity-server:8080/realms/realm_52400114/protocol/openid-connect/certs}
+      OIDC_ISSUER: http://localhost:8081/realms/realm_52400114
+      OIDC_AUDIENCE: flask-app
+      OIDC_JWKS_URL: http://authentication-identity-server:8080/realms/realm_52400114/protocol/openid-connect/certs
     networks:
       cloud-net:
         ipv4_address: 172.19.0.4
