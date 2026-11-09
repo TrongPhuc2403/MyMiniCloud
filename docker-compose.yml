@@ -112,6 +112,8 @@ services:
       MINIO_BUCKET_NAME: demo
     volumes:
       - ./object-storage-server/init_buckets.py:/app/init_buckets.py:ro
+      - ./object-storage-server/init_buckets.py:/app/init_buckets.py:ro
+      - ./object-storage-server/sample-files:/app/sample-files:ro
     working_dir: /app
     command:
       - sh
