@@ -1,79 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyMiniCloud - Web Server 1</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f9;
-      color: #222;
-      margin: 0;
-      padding: 40px 20px;
-    }
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 28px 32px;
-      border-radius: 8px;
-      border-top: 5px solid #1e4db7;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    }
-    .badge {
-      display: inline-block;
-      background: #e8f0fe;
-      color: #1e4db7;
-      padding: 4px 12px;
-      border-radius: 4px;
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-    h1 {
-      margin-top: 0;
-      font-size: 24px;
-      color: #132440;
-    }
-    ul {
-      line-height: 1.8;
-    }
-    a {
-      color: #1e4db7;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .footer {
-      margin-top: 24px;
-      padding-top: 14px;
-      border-top: 1px solid #ddd;
-      font-size: 13px;
-      color: #555;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="badge">NODE #1 - WEB-FRONTEND-SERVER1</div>
-    <h1>Welcome to MyMiniCloud – Served by: web-frontend-server1</h1>
-    <p>Hệ thống mô phỏng hạ tầng đám mây môn Điện toán đám mây (TDTU). Request hiện tại đang được xử lý bởi <b>web-frontend-server1</b> thông qua Nginx Load Balancer (Round Robin).</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MyMiniCloud - Web Server 1</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f9;
+        color: #222;
+        margin: 0;
+        padding: 40px 20px;
+      }
+      .container {
+        max-width: 760px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 28px 32px;
+        border-radius: 8px;
+        border-top: 5px solid #1e4db7;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      }
+      .badge {
+        display: inline-block;
+        background: #e8f0fe;
+        color: #1e4db7;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 12px;
+      }
+      h1 {
+        margin-top: 0;
+        font-size: 24px;
+        color: #132440;
+      }
+      ul {
+        line-height: 1.8;
+      }
+      a {
+        color: #1e4db7;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .footer {
+        margin-top: 24px;
+        padding-top: 14px;
+        border-top: 1px solid #ddd;
+        font-size: 13px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="badge">NODE #1 - WEB-FRONTEND-SERVER1</div>
+      <h1>Welcome to MyMiniCloud – Served by: web-frontend-server1</h1>
+      <p>
+        Hệ thống mô phỏng hạ tầng đám mây môn Điện toán đám mây (TDTU). Request
+        hiện tại đang được xử lý bởi <b>web-frontend-server1</b> thông qua Nginx
+        Load Balancer (Round Robin).
+      </p>
 
-    <h3>Các đường dẫn dịch vụ trong hệ thống:</h3>
-    <ul>
-      <li><a href="/blog/">Trang Blog cá nhân (/blog/)</a></li>
-      <li><a href="/api/hello">Kiểm tra Backend API (/api/hello)</a></li>
-      <li><a href="/student/">Danh sách sinh viên JSON (/student/)</a></li>
-      <li><a href="/auth/">Keycloak Authentication (/auth/)</a></li>
-      <li><a href="http://localhost:9090/targets" target="_blank">Prometheus Targets (:9090)</a></li>
-      <li><a href="http://localhost:3000" target="_blank">Grafana Dashboard (:3000)</a></li>
-    </ul>
+      <h3>Các đường dẫn dịch vụ trong hệ thống:</h3>
+      <ul>
+        <li><a href="/blog/">Trang Blog cá nhân (/blog/)</a></li>
+        <li><a href="/api/hello">Kiểm tra Backend API (/api/hello)</a></li>
+        <li><a href="/student/">Danh sách sinh viên JSON (/student/)</a></li>
+        <li>
+          <a id="keycloak-link" href="#"> Keycloak Administration </a>
+        </li>
 
-    <div class="footer">
-      Nhóm thực hiện: Nguyễn Trọng Phúc · Lê Khải Hoàn · Trần Hữu Long
+        <script>
+          document.getElementById("keycloak-link").href =
+            `${window.location.protocol}//${window.location.hostname}:8081/admin/`;
+        </script>
+        <li>
+          <a href="http://localhost:9090/targets" target="_blank"
+            >Prometheus Targets (:9090)</a
+          >
+        </li>
+        <li>
+          <a href="http://localhost:3000" target="_blank"
+            >Grafana Dashboard (:3000)</a
+          >
+        </li>
+      </ul>
+
+      <div class="footer">
+        Nhóm thực hiện: Nguyễn Trọng Phúc · Lê Khải Hoàn · Trần Hữu Long
+      </div>
     </div>
-  </div>
-</body>
+  </body>
 </html>
