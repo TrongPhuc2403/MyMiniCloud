@@ -19,3 +19,7 @@ __pycache__/
 
 # Logs
 *.log
+
+# Editor and manual backup files
+*.bak
+*.tmp
