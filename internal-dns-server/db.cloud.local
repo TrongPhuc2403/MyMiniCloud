@@ -1,6 +1,6 @@
 $TTL 604800
 @   IN SOA ns.cloud.local. admin.cloud.local. (
-        2026110602
+        2026110901
         604800
         86400
         2419200
@@ -14,3 +14,9 @@ web     IN A 172.19.0.6
 app     IN A 172.19.0.4
 auth    IN A 172.19.0.2
 storage IN A 172.19.0.3
+
+
+; Additional DNS records for project requirements
+app-backend    IN    A    172.19.0.4
+minio          IN    A    172.19.0.3
+keycloak       IN    A    172.19.0.2

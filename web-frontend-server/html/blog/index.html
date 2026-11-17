@@ -621,7 +621,10 @@
         }
       }
     </style>
-  </head>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<script src="/assets/theme.js"></script>
+<link rel="stylesheet" href="/assets/blog.css">
+</head>
   <body>
     <svg class="icons" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <symbol id="cloud" viewBox="0 0 64 48">
@@ -741,7 +744,8 @@
           <svg class="arrow" aria-hidden="true"><use href="#arrow" /></svg
         ></a>
       </nav>
-    </header>
+    <button class="blog-theme-toggle" data-theme-toggle type="button" aria-label="Chuyển giao diện">☼</button>
+</header>
     <main class="wrap" id="main">
       <nav class="breadcrumb" aria-label="Đường dẫn trang">
         <a href="/">Trang chủ</a><span aria-hidden="true">/</span
@@ -778,11 +782,7 @@
         </div>
         <div class="cards">
           <article class="card">
-            <div class="card-art" aria-hidden="true">
-              <span class="art-label">THE CLOUD, EXPLAINED</span
-              ><svg viewBox="0 0 64 48"><use href="#cloud" /></svg
-              ><span class="art-index">01 / FOUNDATION</span>
-            </div>
+            <div class="card-art" aria-hidden="true"><img class="cover-image" src="/assets/cover-1.svg" alt="" loading="lazy"></div>
             <div class="card-body">
               <span class="category">Kiến thức nền tảng</span>
               <h3>Tổng quan về Cloud Computing</h3>
@@ -800,11 +800,7 @@
             </div>
           </article>
           <article class="card">
-            <div class="card-art art-docker" aria-hidden="true">
-              <span class="art-label">BUILD ONCE. RUN ANYWHERE.</span
-              ><svg><use href="#box" /></svg
-              ><span class="art-index">02 / CONTAINERS</span>
-            </div>
+            <div class="card-art art-docker" aria-hidden="true"><img class="cover-image" src="/assets/cover-2.svg" alt="" loading="lazy"></div>
             <div class="card-body">
               <span class="category">Phát triển & triển khai</span>
               <h3>Docker và công nghệ Container</h3>
@@ -822,11 +818,7 @@
             </div>
           </article>
           <article class="card">
-            <div class="card-art art-aws" aria-hidden="true">
-              <span class="art-label">YOUR NEXT CLOUD SERVER</span
-              ><svg><use href="#server" /></svg
-              ><span class="art-index">03 / INFRASTRUCTURE</span>
-            </div>
+            <div class="card-art art-aws" aria-hidden="true"><img class="cover-image" src="/assets/cover-3.svg" alt="" loading="lazy"></div>
             <div class="card-body">
               <span class="category">Hạ tầng đám mây</span>
               <h3>Triển khai ứng dụng trên AWS EC2</h3>
